@@ -285,6 +285,19 @@ export async function fetchInvoicesPages(query: string) {
   return totalPages;
 }
 
+export async function fetchInvoiceById(id: string) {
+  const invoice = invoices.find((inv) => inv.id === id);
+  if (invoice) {
+    return {
+      id: invoice.id,
+      customer_id: invoice.customer_id,
+      amount: invoice.amount / 100, // Convert amount from cents to dollars
+      status: invoice.status,
+    };
+  }
+  return undefined;
+}
+
 export async function fetchCustomers() {
   return customers
     .map((customer) => ({
@@ -339,19 +352,6 @@ export async function fetchFilteredCustomers(query: string) {
   
   // Sort by name
   return filtered.sort((a, b) => a.name.localeCompare(b.name));
-}
-
-export async function fetchInvoiceById(id: string) {
-  const invoice = invoices.find((inv) => inv.id === id);
-  if (invoice) {
-    return {
-      id: invoice.id,
-      customer_id: invoice.customer_id,
-      amount: invoice.amount / 100, // Convert amount from cents to dollars
-      status: invoice.status,
-    };
-  }
-  return undefined;
 }
 
 export async function insertInvoice(data: {
