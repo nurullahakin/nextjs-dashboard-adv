@@ -1,7 +1,7 @@
-import Search from '@/app/ui/search';
-import Table from '@/app/ui/customers/table';
-import { lusitana } from '@/app/ui/fonts';
-import { CustomersTableSkeleton } from '@/app/ui/skeletons';
+import Search from '@/ui/search';
+import Table from '@/ui/customers/table';
+import { lusitana } from '@/ui/fonts';
+import { CustomersTableSkeleton } from '@/ui/skeletons';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 
