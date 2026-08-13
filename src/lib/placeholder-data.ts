@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { InvoiceForm } from "./definitions";
 
 // This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
 // https://nextjs.org/learn/dashboard-app/fetching-data
@@ -293,7 +294,7 @@ export async function fetchInvoiceById(id: string) {
       customer_id: invoice.customer_id,
       amount: invoice.amount / 100, // Convert amount from cents to dollars
       status: invoice.status,
-    };
+    } as InvoiceForm;
   }
   return undefined;
 }
