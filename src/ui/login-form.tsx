@@ -18,7 +18,7 @@ export default function LoginForm() {
   const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
   return (
     <form action={formAction}>
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 py-6">
+      <div className="flex-1 rounded-lg bg-gray-100 px-6 py-6">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Please log in to continue.
         </h1>

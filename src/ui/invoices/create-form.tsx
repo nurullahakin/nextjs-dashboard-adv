@@ -20,7 +20,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
       {state.message && (
         <p className="mb-4 text-sm text-red-500">{state.message}</p>
       )}
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
+      <div className="rounded-md bg-gray-100 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
           <label htmlFor="customer" className="mb-2 block text-sm font-medium">

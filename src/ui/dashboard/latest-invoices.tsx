@@ -12,7 +12,7 @@ export default async function LatestInvoices() {
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Latest Invoices
       </h2>
-      <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
+      <div className="flex grow flex-col justify-between rounded-xl bg-gray-100 p-4">
         {/* NOTE: Uncomment this code in Chapter 7 */}
 
         {<div className="bg-white px-6">
