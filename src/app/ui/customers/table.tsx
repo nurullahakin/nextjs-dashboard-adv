@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { fetchFilteredCustomers } from '@/app/lib/placeholder-data';
+import { fetchFilteredCustomers } from '@/lib/placeholder-data';
 
 export default async function CustomersTable({
   query,
