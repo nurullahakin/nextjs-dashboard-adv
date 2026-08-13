@@ -1,5 +1,6 @@
 import AcmeLogo from '@/ui/acme-logo';
 import LoginForm from '@/ui/login-form';
+import Link from 'next/link';
 import { Suspense } from 'react';
  
 export default function LoginPage() {
@@ -14,6 +15,14 @@ export default function LoginPage() {
         <Suspense>
           <LoginForm />
         </Suspense>
+        <div className="flex items-center justify-center">
+          <Link
+            href="/"
+            className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
+          >
+            Back to home
+          </Link>
+        </div>
       </div>
     </main>
   );
