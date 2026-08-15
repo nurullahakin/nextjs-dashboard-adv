@@ -1,11 +1,15 @@
 'use server';
 
 import { z } from 'zod';
-import { insertInvoice, updateInvoice as updateInvoiceDb, deleteInvoice as deleteInvoiceDb } from './placeholder-data';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import postgres from 'postgres';
+
+const sql = postgres(process.env.POSTGRES_URL!, {
+  ssl: process.env.NODE_ENV === 'development' ? false : 'require',
+});
 
 const FormSchema = z.object({
   id: z.string(),
@@ -56,12 +60,10 @@ export async function createInvoice(prevState: State, formData: FormData) {
  
   // Persist data
   try {
-    await insertInvoice({
-      customerId,
-      amount: amountInCents,
-      status,
-      date,
-    });
+    await sql`
+      INSERT INTO invoices (customer_id, amount, status, date)
+      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+    `;
   } catch (error) {
     // We'll also log the error to the console for now
     console.error(error);
@@ -97,11 +99,11 @@ export async function updateInvoice(
   const amountInCents = amount * 100;
 
   try {
-    await updateInvoiceDb(id, {
-      customerId,
-      amount: amountInCents,
-      status,
-    });
+    await sql`
+      UPDATE invoices
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id}
+    `;
   } catch (error) {
     console.error(error);
     return {
@@ -115,7 +117,7 @@ export async function updateInvoice(
 
 export async function deleteInvoice(id: string) {
   // throw new Error('Simulated Persistence Error: Failed to Delete Invoice.');
-  await deleteInvoiceDb(id);
+  await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');
 }
 

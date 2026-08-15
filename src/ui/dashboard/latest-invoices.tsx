@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import { lusitana } from '@/ui/fonts';
 import { LatestInvoice } from '@/lib/definitions';
-import { fetchLatestInvoices } from '@/lib/placeholder-data';
+import { fetchLatestInvoices } from '@/lib/data';
 
 export default async function LatestInvoices() {
   const latestInvoices: LatestInvoice[] = await fetchLatestInvoices();
