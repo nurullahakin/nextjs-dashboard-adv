@@ -229,3 +229,49 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
     throw new Error('Failed to fetch user.');
   }
 }
+
+export async function insertInvoice(data: {
+  customerId: string;
+  amount: number;
+  status: 'pending' | 'paid';
+  date: string;
+}) {
+  try {
+    await sql`
+      INSERT INTO invoices (customer_id, amount, status, date)
+      VALUES (${data.customerId}, ${data.amount}, ${data.status}, ${data.date})
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to create invoice.');
+  }
+}
+
+export async function updateInvoice(
+  id: string,
+  data: {
+    customerId: string;
+    amount: number;
+    status: 'pending' | 'paid';
+  },
+) {
+  try {
+    await sql`
+      UPDATE invoices
+      SET customer_id = ${data.customerId}, amount = ${data.amount}, status = ${data.status}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to update invoice.');
+  }
+}
+
+export async function deleteInvoice(id: string) {
+  try {
+    await sql`DELETE FROM invoices WHERE id = ${id}`;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to delete invoice.');
+  }
+}

@@ -5,11 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
-import postgres from 'postgres';
-
-const sql = postgres(process.env.POSTGRES_URL!, {
-  ssl: process.env.NODE_ENV === 'development' ? false : 'require',
-});
+import { insertInvoice, updateInvoice as updateInvoiceData, deleteInvoice as deleteInvoiceData } from '@/lib/data';
 
 const FormSchema = z.object({
   id: z.string(),
@@ -60,10 +56,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
  
   // Persist data
   try {
-    await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-    `;
+    await insertInvoice({ customerId, amount: amountInCents, status, date });
   } catch (error) {
     // We'll also log the error to the console for now
     console.error(error);
@@ -99,11 +92,7 @@ export async function updateInvoice(
   const amountInCents = amount * 100;
 
   try {
-    await sql`
-      UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-      WHERE id = ${id}
-    `;
+    await updateInvoiceData(id, { customerId, amount: amountInCents, status });
   } catch (error) {
     console.error(error);
     return {
@@ -117,7 +106,7 @@ export async function updateInvoice(
 
 export async function deleteInvoice(id: string) {
   // throw new Error('Simulated Persistence Error: Failed to Delete Invoice.');
-  await sql`DELETE FROM invoices WHERE id = ${id}`;
+  await deleteInvoiceData(id);
   revalidatePath('/dashboard/invoices');
 }
 
