@@ -1,8 +1,8 @@
-import Form from '@/ui/invoices/edit-form';
-import Breadcrumbs from '@/ui/invoices/breadcrumbs';
-import { fetchInvoiceById, fetchCustomers } from '@/lib/data';
-import { notFound } from 'next/navigation';
- 
+import Form from "@/ui/invoices/edit-form";
+import Breadcrumbs from "@/ui/invoices/breadcrumbs";
+import { fetchInvoiceById, fetchCustomers } from "@/lib/data";
+import { notFound } from "next/navigation";
+
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
@@ -17,9 +17,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: "Invoices", href: "/dashboard/invoices" },
           {
-            label: 'Edit Invoice',
+            label: "Edit Invoice",
             href: `/dashboard/invoices/${id}/edit`,
             active: true,
           },

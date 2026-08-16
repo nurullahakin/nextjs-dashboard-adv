@@ -1,21 +1,24 @@
-'use client';
- 
-import { lusitana } from '@/ui/fonts';
+"use client";
+
+import { lusitana } from "@/ui/fonts";
 import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
-} from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from './button';
-import { useActionState } from 'react';
-import { authenticate } from '@/lib/actions';
-import { useSearchParams } from 'next/navigation';
- 
+} from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { Button } from "./button";
+import { useActionState } from "react";
+import { authenticate } from "@/lib/actions";
+import { useSearchParams } from "next/navigation";
+
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-  const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const [errorMessage, formAction, isPending] = useActionState(
+    authenticate,
+    undefined,
+  );
   return (
     <form action={formAction}>
       <div className="flex-1 rounded-lg bg-gray-100 px-6 py-6">

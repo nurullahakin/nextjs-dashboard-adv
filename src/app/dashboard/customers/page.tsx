@@ -1,12 +1,12 @@
-import Search from '@/ui/search';
-import Table from '@/ui/customers/table';
-import { lusitana } from '@/ui/fonts';
-import { CustomersTableSkeleton } from '@/ui/skeletons';
-import { Suspense } from 'react';
-import { Metadata } from 'next';
+import Search from "@/ui/search";
+import Table from "@/ui/customers/table";
+import { lusitana } from "@/ui/fonts";
+import { CustomersTableSkeleton } from "@/ui/skeletons";
+import { Suspense } from "react";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Customers',
+  title: "Customers",
 };
 
 export default async function Page(props: {
@@ -15,7 +15,7 @@ export default async function Page(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const query = searchParams?.query || '';
+  const query = searchParams?.query || "";
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">

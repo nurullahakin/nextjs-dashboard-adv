@@ -1,22 +1,26 @@
-'use server';
+"use server";
 
-import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
-import { AuthError } from 'next-auth';
-import { insertInvoice, updateInvoice as updateInvoiceData, deleteInvoice as deleteInvoiceData } from '@/lib/data';
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
+import {
+  insertInvoice,
+  updateInvoice as updateInvoiceData,
+  deleteInvoice as deleteInvoiceData,
+} from "@/lib/data";
 
 const FormSchema = z.object({
   id: z.string(),
   customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
+    invalid_type_error: "Please select a customer.",
   }),
   amount: z.coerce
     .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
-  status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
+    .gt(0, { message: "Please enter an amount greater than $0." }),
+  status: z.enum(["pending", "paid"], {
+    invalid_type_error: "Please select an invoice status.",
   }),
   date: z.string(),
 });
@@ -36,24 +40,24 @@ const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 export async function createInvoice(prevState: State, formData: FormData) {
   // Validate form fields using Zod
   const validatedFields = CreateInvoice.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
+    customerId: formData.get("customerId"),
+    amount: formData.get("amount"),
+    status: formData.get("status"),
   });
- 
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Invalid Fields. Failed to Create Invoice.',
+      message: "Invalid Fields. Failed to Create Invoice.",
     };
   }
-  
+
   // Prepare data for persistence
   const { customerId, amount, status } = validatedFields.data;
   const amountInCents = amount * 100;
-  const date = new Date().toISOString().split('T')[0];
- 
+  const date = new Date().toISOString().split("T")[0];
+
   // Persist data
   try {
     await insertInvoice({ customerId, amount: amountInCents, status, date });
@@ -61,13 +65,13 @@ export async function createInvoice(prevState: State, formData: FormData) {
     // We'll also log the error to the console for now
     console.error(error);
     return {
-      message: 'Persistence Error: Failed to Create Invoice.',
+      message: "Persistence Error: Failed to Create Invoice.",
     };
   }
 
   // Revalidate the cache for the invoices page and redirect the user.
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath("/dashboard/invoices");
+  redirect("/dashboard/invoices");
 }
 
 export async function updateInvoice(
@@ -76,15 +80,15 @@ export async function updateInvoice(
   formData: FormData,
 ) {
   const validatedFields = UpdateInvoice.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
+    customerId: formData.get("customerId"),
+    amount: formData.get("amount"),
+    status: formData.get("status"),
   });
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Invalid Fields. Failed to Update Invoice.',
+      message: "Invalid Fields. Failed to Update Invoice.",
     };
   }
 
@@ -96,18 +100,18 @@ export async function updateInvoice(
   } catch (error) {
     console.error(error);
     return {
-      message: 'Persistence Error: Failed to Update Invoice.',
+      message: "Persistence Error: Failed to Update Invoice.",
     };
   }
 
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath("/dashboard/invoices");
+  redirect("/dashboard/invoices");
 }
 
 export async function deleteInvoice(id: string) {
   // throw new Error('Simulated Persistence Error: Failed to Delete Invoice.');
   await deleteInvoiceData(id);
-  revalidatePath('/dashboard/invoices');
+  revalidatePath("/dashboard/invoices");
 }
 
 export async function authenticate(
@@ -115,14 +119,14 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await signIn('credentials', formData);
+    await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
+        case "CredentialsSignin":
+          return "Invalid credentials.";
         default:
-          return 'Something went wrong.';
+          return "Something went wrong.";
       }
     }
     throw error;

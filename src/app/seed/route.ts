@@ -1,9 +1,14 @@
-import bcrypt from 'bcrypt';
-import postgres from 'postgres';
-import { invoices, customers, revenue, users } from '../../lib/placeholder-data';
+import bcrypt from "bcrypt";
+import postgres from "postgres";
+import {
+  invoices,
+  customers,
+  revenue,
+  users,
+} from "../../lib/placeholder-data";
 
 const sql = postgres(process.env.POSTGRES_URL!, {
-  ssl: process.env.NODE_ENV === 'development' ? false : 'require',
+  ssl: process.env.NODE_ENV === "development" ? false : "require",
 });
 
 async function seedUsers() {
@@ -109,7 +114,7 @@ export async function GET() {
       seedRevenue(),
     ]);
 
-    return Response.json({ message: 'Database seeded successfully' });
+    return Response.json({ message: "Database seeded successfully" });
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }

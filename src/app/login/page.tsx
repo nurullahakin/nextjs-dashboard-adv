@@ -1,8 +1,8 @@
-import AcmeLogo from '@/ui/acme-logo';
-import LoginForm from '@/ui/login-form';
-import Link from 'next/link';
-import { Suspense } from 'react';
- 
+import AcmeLogo from "@/ui/acme-logo";
+import LoginForm from "@/ui/login-form";
+import Link from "next/link";
+import { Suspense } from "react";
+
 export default function LoginPage() {
   return (
     <main className="flex items-center justify-center md:h-screen">
