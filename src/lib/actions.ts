@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
@@ -9,6 +10,8 @@ import {
   insertInvoice,
   updateInvoice as updateInvoiceData,
   deleteInvoice as deleteInvoiceData,
+  getUserByEmail,
+  createUser,
 } from "@/lib/data";
 
 const FormSchema = z.object({
@@ -131,4 +134,83 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+type RegisterUserState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    password?: string[];
+  };
+  message?: string | null;
+  values?: {
+    name?: string;
+    email?: string;
+    password?: string;
+  };
+};
+
+export async function registerUser(
+  prevState: RegisterUserState | undefined,
+  formData: FormData,
+): Promise<RegisterUserState> {
+  const registerUserSchema = z.object({
+    name: z.string().trim().min(2, "Name must be at least 2 characters long."),
+    email: z.string().trim().email("Please enter a valid email address."),
+    password: z.string().min(6, "Password must be at least 6 characters long."),
+  });
+
+  const values = {
+    name: String(formData.get("name") ?? ""),
+    email: String(formData.get("email") ?? ""),
+    password: String(formData.get("password") ?? ""),
+  };
+
+  const parsed = registerUserSchema.safeParse({
+    name: values.name,
+    email: values.email,
+    password: values.password,
+  });
+
+  if (!parsed.success) {
+    return {
+      errors: parsed.error.flatten().fieldErrors,
+      message: "Invalid Fields. Failed to Create Account.",
+      values,
+    };
+  }
+
+  const { name, email, password } = parsed.data;
+
+  const existingUser = await getUserByEmail(email);
+  if (existingUser) {
+    return {
+      errors: {
+        email: ["An account with this email already exists."],
+      },
+      message: "An account with this email already exists.",
+      values,
+    };
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    await createUser({ name, email, password: hashedPassword });
+  } catch (error) {
+    console.error("Registration Error:", error);
+    return {
+      message: "Something went wrong while creating your account.",
+    };
+  }
+
+  await signIn("credentials", {
+    email,
+    password,
+    redirectTo: "/dashboard",
+  });
+
+  return {
+    message: null,
+  };
 }

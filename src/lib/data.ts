@@ -230,6 +230,25 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
   }
 }
 
+export async function createUser(data: {
+  name: string;
+  email: string;
+  password: string;
+}) {
+  try {
+    const [user] = await sql<User[]>`
+      INSERT INTO users (name, email, password)
+      VALUES (${data.name}, ${data.email}, ${data.password})
+      RETURNING id, name, email, password
+    `;
+
+    return user;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create user.");
+  }
+}
+
 export async function insertInvoice(data: {
   customerId: string;
   amount: number;

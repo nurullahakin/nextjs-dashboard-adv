@@ -411,4 +411,21 @@ export async function getUserByEmail(email: string) {
   return user;
 }
 
+export async function createUser(data: {
+  name: string;
+  email: string;
+  password: string;
+}) {
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  const user = {
+    id: crypto.randomUUID(),
+    name: data.name,
+    email: data.email,
+    password: hashedPassword,
+  };
+
+  users.push(user);
+  return user;
+}
+
 export { users, customers, invoices, revenue, latestInvoices, cardData };
